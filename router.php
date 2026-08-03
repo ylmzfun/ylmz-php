@@ -11,7 +11,7 @@ $uri = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
 $publicPath = __DIR__ . '/public';
 
 if ($uri !== '/' && file_exists($publicPath . $uri)) {
-    return false; // Let PHP built-in server handle static files
+    return false;
 }
 
 // Route everything else through the framework

@@ -31,11 +31,15 @@ require YL_CORE . '/common/function.php';
 // 注册命令
 $kernel = new \Ylmz\Console\Kernel();
 
+$kernel->register('new', \Ylmz\Console\NewProjectCommand::class);
 $kernel->register('make:controller', \Ylmz\Console\MakeControllerCommand::class);
 $kernel->register('make:model', \Ylmz\Console\MakeModelCommand::class);
 $kernel->register('make:middleware', \Ylmz\Console\MakeMiddlewareCommand::class);
 $kernel->register('make:provider', \Ylmz\Console\MakeProviderCommand::class);
+$kernel->register('make:job', \Ylmz\Console\MakeJobCommand::class);
 $kernel->register('serve', \Ylmz\Console\ServeCommand::class);
 $kernel->register('routes', \Ylmz\Console\RoutesCommand::class);
+$kernel->register('queue:work', \Ylmz\Console\QueueWorkCommand::class);
+$kernel->register('queue:clear', \Ylmz\Console\QueueClearCommand::class);
 
 exit($kernel->run($argv));

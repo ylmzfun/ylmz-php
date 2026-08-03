@@ -35,6 +35,19 @@ require CORE_PATH . '/common/function.php';
 // Initialize log
 \Ylmz\Log::init();
 
+// Initialize Redis (if configured and extension loaded)
+if (\Ylmz\Redis::isAvailable()) {
+    \Ylmz\Redis::setConfig([
+        'default' => [
+            'host' => \Ylmz\Config::get('REDIS_HOST', '127.0.0.1'),
+            'port' => \Ylmz\Config::getInt('REDIS_PORT', 6379),
+            'password' => \Ylmz\Config::get('REDIS_PASSWORD'),
+            'database' => \Ylmz\Config::getInt('REDIS_DATABASE', 0),
+            'prefix' => \Ylmz\Config::get('REDIS_PREFIX', 'ylmz:'),
+        ],
+    ]);
+}
+
 // Create and boot application
 $app = \Ylmz\Application::getInstance();
 

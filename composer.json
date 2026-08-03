@@ -1,15 +1,19 @@
 {
     "name": "ylmz/framework",
-    "description": "Ylmz PHP Framework - A lightweight PHP MVC framework",
+    "description": "Ylmz PHP Framework - Lightweight MVC framework with Redis, MySQL, Queue support",
     "type": "project",
-    "keywords": ["PHP", "Framework", "Ylmz", "MVC"],
+    "keywords": ["PHP", "Framework", "Ylmz", "MVC", "Redis", "MySQL", "Queue"],
     "require": {
         "php": ">=8.0",
+        "ext-json": "*",
         "filp/whoops": "^2.15",
         "symfony/var-dumper": "^6.0",
         "catfan/medoo": "^2.1",
         "twig/twig": "^3.0",
         "vlucas/phpdotenv": "^5.5"
+    },
+    "suggest": {
+        "ext-redis": "Required for Redis cache and queue support"
     },
     "autoload": {
         "psr-4": {
@@ -21,10 +25,11 @@
         "ylmz"
     ],
     "scripts": {
+        "post-create-project-cmd": [
+            "@php ylmz new --from-create-project"
+        ],
         "serve": "php ylmz serve",
-        "make-controller": "php ylmz make:controller",
-        "make-model": "php ylmz make:model",
-        "make-middleware": "php ylmz make:middleware"
+        "queue-work": "php ylmz queue:work"
     },
     "repositories": {
         "packagist": {

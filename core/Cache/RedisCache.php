@@ -3,27 +3,42 @@
 namespace Ylmz\Cache;
 
 use Ylmz\CacheDriver;
+use Ylmz\Redis;
 
 class RedisCache implements CacheDriver
 {
-    // TODO: implement Redis caching via phpredis
+    private \Redis $redis;
+
+    public function __construct()
+    {
+        $this->redis = Redis::connection();
+    }
+
     public function set(string $key, mixed $value, int $ttl = 0): bool
     {
-        return false;
+        $data = serialize($value);
+        if ($ttl > 0) {
+            return $this->redis->setex($key, $ttl, $data);
+        }
+        return $this->redis->set($key, $data);
     }
 
     public function get(string $key): mixed
     {
-        return null;
+        $data = $this->redis->get($key);
+        if ($data === false) {
+            return null;
+        }
+        return unserialize($data);
     }
 
     public function delete(string $key): bool
     {
-        return false;
+        return (bool)$this->redis->del($key);
     }
 
     public function clear(): bool
     {
-        return false;
+        return $this->redis->flushDB();
     }
 }

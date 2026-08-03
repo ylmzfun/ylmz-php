@@ -1,0 +1,41 @@
+#!/usr/bin/env php
+<?php
+
+/**
+ * Ylmz Framework CLI
+ */
+
+// 确定项目根目录
+define('YL_ROOT', __DIR__);
+
+// 加载 Composer 自动加载
+$autoloadFile = YL_ROOT . '/vendor/autoload.php';
+if (!file_exists($autoloadFile)) {
+    echo 'Could not find Composer autoloader. Run composer install first.' . PHP_EOL;
+    exit(1);
+}
+
+require $autoloadFile;
+define('YL_CORE', YL_ROOT . '/core');
+define('YL_APP', YL_ROOT . '/app');
+define('YL_RUNTIME', YL_ROOT . '/runtime');
+
+// 加载环境配置
+if (file_exists(YL_ROOT . '/.env')) {
+    \Ylmz\Config::load(YL_ROOT);
+}
+
+// 加载辅助函数
+require YL_CORE . '/common/function.php';
+
+// 注册命令
+$kernel = new \Ylmz\Console\Kernel();
+
+$kernel->register('make:controller', \Ylmz\Console\MakeControllerCommand::class);
+$kernel->register('make:model', \Ylmz\Console\MakeModelCommand::class);
+$kernel->register('make:middleware', \Ylmz\Console\MakeMiddlewareCommand::class);
+$kernel->register('make:provider', \Ylmz\Console\MakeProviderCommand::class);
+$kernel->register('serve', \Ylmz\Console\ServeCommand::class);
+$kernel->register('routes', \Ylmz\Console\RoutesCommand::class);
+
+exit($kernel->run($argv));

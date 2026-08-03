@@ -1,23 +1,35 @@
 {
-  "name":"Cooly Frame",
-  "description":"a simple framework",
-  "type":"framework",
-  "keyword":[
-    "PHP",
-    "Framework",
-    "Cooly Frame"
-  ],
-  "require":{
-    "php":">=5.30",
-    "filp/whoops":"*",
-    "symfony/var-dumper":"*",
-    "catfan/medoo":"*",
-    "twig/twig":"*"
-  },
-  "repositories": {
-    "packagist": {
-      "type": "composer",
-      "url": "https://packagist.phpcomposer.com"
+    "name": "ylmz/framework",
+    "description": "Ylmz PHP Framework - A lightweight PHP MVC framework",
+    "type": "project",
+    "keywords": ["PHP", "Framework", "Ylmz", "MVC"],
+    "require": {
+        "php": ">=8.0",
+        "filp/whoops": "^2.15",
+        "symfony/var-dumper": "^6.0",
+        "catfan/medoo": "^2.1",
+        "twig/twig": "^3.0",
+        "vlucas/phpdotenv": "^5.5"
+    },
+    "autoload": {
+        "psr-4": {
+            "Ylmz\\": "core/",
+            "App\\": "app/"
+        }
+    },
+    "bin": [
+        "ylmz"
+    ],
+    "scripts": {
+        "serve": "php ylmz serve",
+        "make-controller": "php ylmz make:controller",
+        "make-model": "php ylmz make:model",
+        "make-middleware": "php ylmz make:middleware"
+    },
+    "repositories": {
+        "packagist": {
+            "type": "composer",
+            "url": "https://packagist.org"
+        }
     }
-  }
 }

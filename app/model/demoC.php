@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Model\Demo;
+namespace App\Model;
 
 use Ylmz\Model;
 
-class DemoA extends Model
+class DemoC extends Model
 {
     public function getList(): array
     {

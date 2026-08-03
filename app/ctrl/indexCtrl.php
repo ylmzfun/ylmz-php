@@ -1,37 +1,24 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: maizai1994
- * Date: 2018/9/30
- * Time: 08:46
- */
-namespace app\ctrl;
 
-use core\cooly;
-use core\lib\cache;
+namespace App\Ctrl;
 
-class indexCtrl extends cooly {
-    public function index()
+use Ylmz\Controller;
+use Ylmz\Http\Request;
+use Ylmz\Http\Response;
+
+class IndexCtrl extends Controller
+{
+    public function index(Request $request): Response
     {
-//        cache::init();
-//        cache::setCache('php',"2345");
-//        cache::setCache('php1',"2345");
-//        cache::setCache('php3',"2345");
-//        $d = cache::getCache('php');
-//        dump($d);
-//        $d = cache::deleteAllCache();
-//        dump($d);
-
-        $data = "hello";
-        $this -> assign("title","标题");
-        $this -> assign('data',$data);
-        $this -> display("index.html");
+        $this->assign('title', 'Ylmz Framework');
+        $this->assign('data', 'Hello Ylmz!');
+        return $this->display('index.html');
     }
 
-    public function test(){
-        $data = "test";
-        $this -> assign("title","标题");
-        $this -> assign('data',$data);
-        $this -> display("test.html");
+    public function test(Request $request): Response
+    {
+        $this->assign('title', 'Test Page');
+        $this->assign('data', 'This is a test');
+        return $this->display('test.html');
     }
 }

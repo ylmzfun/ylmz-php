@@ -1,12 +1,7 @@
 <?php
 
 /**
- * Created by PhpStorm.
- * User: maizai1994
- * Date: 2018/10/2
- * Time: 07:29
- * cooly Framework 1.0
+ * Ylmz PHP Framework
+ * Entry Point
  */
-require "./core/run.php";
-
-
+require __DIR__ . '/core/run.php';

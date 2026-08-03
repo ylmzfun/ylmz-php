@@ -1,50 +1,47 @@
 <?php
 
 /**
- * 创建入口文件
- * 1、定义常量
- * 2、加载函数库
- * 3、启动框架
+ * Ylmz PHP Framework
+ * Bootstrap file
  */
 
-// 定义框架所处目录
-define("COOLY", realpath('./'));
+// Define root path
+define('ROOT_PATH', realpath(__DIR__ . '/..'));
 
-// 定义核心文件所处目录
-define("CORE", COOLY."/core");
+// Define core path
+define('CORE_PATH', ROOT_PATH . '/core');
 
-// 项目所处目录
-define("APP", COOLY."/app");
+// Define app path
+define('APP_PATH', ROOT_PATH . '/app');
 
-// 定义开发调试模式
-define("DEBUG", true);
+// Define runtime path
+define('RUNTIME_PATH', ROOT_PATH . '/runtime');
 
-// 定义运行日志文件目录
-define("RUNTIME",COOLY."/runtime");
+// Load composer autoload
+require ROOT_PATH . '/vendor/autoload.php';
 
-// 定义module
-define("MODULE",'app');
+// Load environment config
+\Ylmz\Config::load(ROOT_PATH);
 
-// 引入自动加载类
-include COOLY . "/vendor/autoload.php";
+// Define debug constant
+define('APP_DEBUG', \Ylmz\Config::getBool('APP_DEBUG', false));
 
+// Load helper functions
+require CORE_PATH . '/common/function.php';
 
-// 引入函数
-include CORE . "/common/function.php";
+// Initialize debug
+\Ylmz\Debug::init();
 
-//  加载核心文件
-include CORE . "/cooly.php";
-// 引用自动加载类
-spl_autoload_register("\core\cooly::load");
+// Initialize log
+\Ylmz\Log::init();
 
-if(DEBUG){
-    // bug调试
-    $debug = new \core\lib\debug();
-    $debug -> init();
-    ini_set("display_errors","On");
-}else{
-    ini_set("display_errors","Off");
+// Create and boot application
+$app = \Ylmz\Application::getInstance();
+
+// Register service providers
+if (file_exists(APP_PATH . '/Provider/RouteServiceProvider.php')) {
+    $app->register(\App\Provider\RouteServiceProvider::class);
 }
 
-// 启动框架
-\core\Cooly::run();
+// Run the application
+$app->run();

@@ -1,18 +1,15 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: maizai1994
- * Date: 2018/9/30
- * Time: 15:52
- */
 
-namespace app\ctrl\demo;
+namespace App\Ctrl\Demo;
 
+use Ylmz\Controller;
+use Ylmz\Http\Request;
+use Ylmz\Http\Response;
 
-use core\cooly;
-
-class demoCtrl extends cooly {
-   public function index(){
-       $this -> display('demo/index.html');
-   }
+class DemoCtrl extends Controller
+{
+    public function index(Request $request): Response
+    {
+        return $this->display('demo/index.html');
+    }
 }

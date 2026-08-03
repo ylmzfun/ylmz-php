@@ -1,10 +1,10 @@
 <?php
 
-namespace Ylmz;
+namespace Ylmz\Support;
 
 class Redis
 {
-    private static ?\Redis $instance = null;
+    private static array $instance = [];
     private static array $config = [];
 
     public static function setConfig(array $config): void

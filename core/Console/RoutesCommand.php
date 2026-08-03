@@ -9,7 +9,7 @@ class RoutesCommand extends Command
 
     public function handle(array $args): int
     {
-        $router = \Ylmz\Application::getInstance()->getRouter();
+        $router = \Ylmz\Foundation\Application::getInstance()->getRouter();
         $routes = $router->getRoutes();
 
         if (empty($routes)) {

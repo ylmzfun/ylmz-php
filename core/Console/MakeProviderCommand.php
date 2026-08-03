@@ -45,7 +45,7 @@ class MakeProviderCommand extends Command
 
 namespace {$namespace};
 
-use Ylmz\ServiceProvider;
+use Ylmz\Foundation\ServiceProvider;
 
 class {$className} extends ServiceProvider
 {

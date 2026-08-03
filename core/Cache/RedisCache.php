@@ -3,7 +3,7 @@
 namespace Ylmz\Cache;
 
 use Ylmz\CacheDriver;
-use Ylmz\Redis;
+use Ylmz\Support\Redis;
 
 class RedisCache implements CacheDriver
 {

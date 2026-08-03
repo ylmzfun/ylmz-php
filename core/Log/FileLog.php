@@ -3,7 +3,7 @@
 namespace Ylmz\Log;
 
 use Ylmz\LogDriver;
-use Ylmz\Config;
+use Ylmz\Foundation\Config;
 
 class FileLog implements LogDriver
 {

@@ -1,7 +1,8 @@
 <?php
 
-namespace Ylmz;
+namespace Ylmz\Support;
 
+use Ylmz\Foundation\Config;
 use Whoops\Run;
 use Whoops\Handler\PrettyPageHandler;
 

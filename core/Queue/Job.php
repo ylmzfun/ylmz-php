@@ -16,8 +16,5 @@ abstract class Job
         return $this->payload;
     }
 
-    /**
-     * Execute the job.
-     */
     abstract public function handle(): void;
 }

@@ -2,6 +2,7 @@
 
 namespace Ylmz;
 
+use Ylmz\Foundation\Container;
 use Ylmz\Http\Request;
 use Ylmz\Http\Response;
 use Ylmz\Http\Middleware;
@@ -13,6 +14,7 @@ class Router
     private array $groupMiddlewares = [];
     private string $defaultController = 'index';
     private string $defaultMethod = 'index';
+    private string $prefix = '';
 
     public function getRoutes(): array
     {
@@ -25,6 +27,9 @@ class Router
 
     public function get(string $path, array|callable $handler, array $middlewares = []): self
     {
+        // Apply prefix
+        $path = $this->prefix . '/' . trim($path, '/');
+        $path = '/' . trim($path, '/');
         return $this->addRoute('GET', $path, $handler, $middlewares);
     }
 
@@ -50,10 +55,18 @@ class Router
 
     public function group(array $middlewares, Closure $callback): void
     {
-        $previous = $this->groupMiddlewares;
+        $previousM = $this->groupMiddlewares;
+        $previousP = $this->prefix;
         $this->groupMiddlewares = array_merge($this->groupMiddlewares, $middlewares);
         $callback($this);
-        $this->groupMiddlewares = $previous;
+        $this->groupMiddlewares = $previousM;
+        $this->prefix = $previousP;
+    }
+
+    public function prefix(string $prefix): self
+    {
+        $this->prefix = '/' . trim($prefix, '/');
+        return $this;
     }
 
     public function middleware(string $middleware): self

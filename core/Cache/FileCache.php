@@ -3,7 +3,7 @@
 namespace Ylmz\Cache;
 
 use Ylmz\CacheDriver;
-use Ylmz\Config;
+use Ylmz\Foundation\Config;
 
 class FileCache implements CacheDriver
 {

@@ -3,6 +3,7 @@
 namespace Ylmz;
 
 use Medoo\Medoo;
+use Ylmz\Foundation\Config;
 
 class Model
 {

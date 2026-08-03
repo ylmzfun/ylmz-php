@@ -1,7 +1,8 @@
 <?php
 
-namespace Ylmz;
+namespace Ylmz\Foundation;
 
+use Ylmz\Log;
 use Ylmz\Http\Request;
 use Ylmz\Http\Response;
 use Throwable;

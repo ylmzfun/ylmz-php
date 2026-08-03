@@ -13,7 +13,7 @@ class Kernel
 
     public function run(array $argv): int
     {
-        $script = array_shift($argv);
+        array_shift($argv);
         $commandName = array_shift($argv) ?? 'list';
 
         if ($commandName === 'list' || $commandName === 'help') {
@@ -22,13 +22,11 @@ class Kernel
 
         if (!isset($this->commands[$commandName])) {
             echo "Command not found: {$commandName}" . PHP_EOL;
-            $this->showHelp();
-            return 1;
+            return $this->showHelp();
         }
 
-        $class = $this->commands[$commandName];
         /** @var Command $instance */
-        $instance = new $class();
+        $instance = new $this->commands[$commandName]();
         return $instance->handle($argv);
     }
 
@@ -44,10 +42,7 @@ class Kernel
             printf("  %-25s %s" . PHP_EOL, $name, $instance->getDescription());
         }
 
-        echo PHP_EOL;
-        printf("  %-25s %s" . PHP_EOL, 'list', 'Show this help');
-        echo PHP_EOL;
-
+        printf("  %-25s %s" . PHP_EOL . PHP_EOL, 'list', 'Show this help');
         return 0;
     }
 }

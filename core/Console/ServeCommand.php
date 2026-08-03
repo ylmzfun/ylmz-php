@@ -17,7 +17,7 @@ class ServeCommand extends Command
 
         $publicPath = YL_ROOT . '/public';
         $command = sprintf(
-            'php -S %s:%d -t %s %s/router.php',
+            'php -S %s:%d -t %s %s/index.php',
             escapeshellarg($host),
             (int)$port,
             escapeshellarg($publicPath),

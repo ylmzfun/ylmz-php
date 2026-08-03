@@ -1,83 +1,96 @@
 # Ylmz PHP Framework
 
-轻量级 PHP MVC 框架，支持 **MySQL**、**Redis**、**消息队列**，开箱即用。
+轻量级 PHP MVC 框架，支持 **MySQL**、**Redis**、**消息队列**、**定时任务**、**JWT 认证**、**数据库迁移**。
 
 ## 特性
 
-- 🚀 **轻量级** — 核心 < 50 个文件，无臃肿依赖
-- 🧩 **MVC 架构** — 清晰的 Controller / Model / View 分层
-- 🗄️ **MySQL** — 基于 Medoo，简洁的数据库操作
-- 🔴 **Redis** — 缓存驱动 + 队列驱动，自动切换
-- 📬 **消息队列** — Job 推入 / Worker 消费 / 延迟任务 / 失败重试
-- 🎨 **Twig 模板** — 布局继承、变量渲染
-- 🧱 **中间件** — Auth / CORS / CSRF 开箱即用
-- 🔧 **CLI 工具** — 代码生成、开发服务器、队列 Worker
-- 📦 **Composer** — PSR-4 自动加载，`composer create-project` 一键安装
+- 🚀 **轻量级** — 核心 62 文件，零臃肿依赖
+- 🧩 **MVC** — Controller / Model / View 清晰分层
+- 🗄️ **MySQL** — Medoo ORM，简洁查询
+- 🔴 **Redis** — 缓存驱动 + 队列驱动
+- 📬 **消息队列** — push / delay / retry / Worker daemon
+- ⏰ **定时任务** — cron 调度器
+- 🔐 **认证** — JWT (纯 PHP，零依赖)
+- 🔒 **安全** — CSRF / XSS 过滤 / AES-256 加密 / bcrypt 哈希
+- 🎨 **模板** — Twig 引擎
+- 🧱 **中间件** — 请求管道，Auth / CORS / CSRF
+- ✅ **验证** — 16 条规则，链式调用
+- 🌍 **多语言** — trans() / trans_choice()
+- � **邮件** — SMTP / sendmail 双驱动
+- �🔧 **CLI** — 18 个命令，代码生成，开发服务器
+- 📦 **安装** — `composer create-project` 一键
 
 ## 环境要求
 
 - PHP >= 8.0
 - Composer
-- MySQL（可选）
-- Redis（可选，缓存 & 队列需要 `ext-redis`）
+- MySQL (可选)
+- Redis (可选，需 `ext-redis`)
 
 ## 快速开始
-
-### 方式一：composer create-project（推荐）
 
 ```bash
 composer create-project ylmz/framework my-project
 cd my-project
+cp .env.example .env
+php ylmz key:generate
 php ylmz serve
 ```
 
-### 方式二：从已有项目生成
-
-```bash
-cd /path/to/ylmz-framework
-php ylmz new ../my-project
-cd ../my-project
-php ylmz serve
-```
+打开 http://localhost:8000
 
 ## 目录结构
 
 ```
 my-project/
-├── .env                    # 环境配置
-├── composer.json           # Composer 依赖
-├── ylmz                    # CLI 命令行入口
-├── router.php              # 内置服务器路由
-├── index.php               # Web 入口
+├── .env                       # 环境配置
+├── composer.json              # Composer
+├── ylmz                       # CLI 入口
+├── index.php                  # Web 入口
 │
-├── core/                   # 框架核心
-│   ├── Application.php     # 应用主类
-│   ├── Container.php       # IoC 容器
-│   ├── Router.php          # 路由（显式 + 自动）
-│   ├── Controller.php      # 控制器基类
-│   ├── Model.php           # 模型基类（Medoo）
-│   ├── Config.php          # 配置管理（.env）
-│   ├── Redis.php           # Redis 连接管理
-│   ├── Validator.php       # 输入验证
-│   ├── ExceptionHandler.php# 统一异常处理
-│   ├── ServiceProvider.php # 服务提供者
-│   ├── Debug.php           # 调试（Whoops）
-│   ├── Http/               # Request / Response / Middleware
-│   ├── Cache/              # 缓存驱动（File / Redis / DB）
-│   ├── Log/                # 日志驱动（File / DB）
-│   ├── Queue/              # 队列（Job / Queue / Worker）
-│   └── Console/            # CLI 命令
+├── core/                      # 框架核心
+│   ├── run.php                # 引导
+│   ├── Controller.php         # 控制器基类
+│   ├── Model.php              # 模型基类
+│   ├── Router.php             # 路由
+│   ├── Schema.php             # 数据库迁移
+│   ├── Cache.php / Log.php    # 门面
+│   ├── CacheDriver.php        # 缓存接口
+│   ├── LogDriver.php          # 日志接口
+│   ├── Foundation/            # 应用核心
+│   │   ├── Application.php    # 主类
+│   │   ├── Container.php      # IoC 容器
+│   │   ├── Config.php         # 配置
+│   │   ├── ServiceProvider.php# 服务提供者
+│   │   └── ExceptionHandler.php
+│   ├── Support/               # 工具类 (17)
+│   │   ├── Redis.php / Crypt.php / Hash.php
+│   │   ├── Session.php / Auth.php / Event.php
+│   │   ├── Validator.php / Collection.php
+│   │   ├── Mail.php / Lang.php / Str.php
+│   │   ├── Schedule.php / RateLimiter.php
+│   │   ├── HttpClient.php / FileUpload.php
+│   │   ├── Pagination.php / Debug.php
+│   ├── Http/                  # Request / Response / Middleware
+│   ├── Cache/                 # 缓存驱动 (File/Redis/DB)
+│   ├── Log/                   # 日志驱动 (File/DB)
+│   ├── Queue/                 # Job / Queue / Worker
+│   ├── Console/               # CLI 命令 (18)
+│   └── Common/                # 辅助函数 (20)
 │
-├── app/                    # 应用层
-│   ├── Ctrl/               # 控制器
-│   ├── Model/              # 模型
-│   ├── Middleware/         # 中间件
-│   ├── Job/                # 队列任务
-│   ├── Provider/           # 服务提供者
-│   └── view/               # Twig 模板
+├── app/                       # 应用层
+│   ├── Ctrl/                  # 控制器
+│   ├── Model/                 # 模型
+│   ├── Middleware/            # 中间件
+│   ├── Job/                   # 队列 Job
+│   ├── Command/               # 自定义命令
+│   ├── Provider/              # 服务提供者
+│   ├── Migration/             # 数据库迁移
+│   ├── lang/                  # 多语言文件
+│   └── view/                  # Twig 模板
 │
-├── runtime/                # 运行时（日志/缓存）
-└── public/                 # 静态资源
+├── runtime/                   # 日志/缓存
+└── public/                    # 静态资源
 ```
 
 ## CLI 命令
@@ -87,55 +100,46 @@ my-project/
 php ylmz new <name>                # 创建新项目
 
 # 代码生成
-php ylmz make:controller <Name>    # 生成控制器
-php ylmz make:model <Name>         # 生成模型
-php ylmz make:middleware <Name>    # 生成中间件
-php ylmz make:provider <Name>      # 生成服务提供者
-php ylmz make:job <Name>           # 生成队列任务
+php ylmz make:controller <Name>    # 控制器
+php ylmz make:model <Name>         # 模型
+php ylmz make:middleware <Name>    # 中间件
+php ylmz make:provider <Name>      # 服务提供者
+php ylmz make:job <Name>           # 队列 Job
+php ylmz make:migration <Name>     # 迁移文件
+php ylmz make:command <Name>       # 自定义命令
+
+# 数据库
+php ylmz migrate                   # 执行迁移
+php ylmz migrate:rollback          # 回滚
+php ylmz migrate:status            # 状态
 
 # 运行
 php ylmz serve [host] [port]       # 开发服务器
-php ylmz queue:work [queue]        # 启动队列 Worker
+php ylmz queue:work [queue]        # 队列 Worker
 php ylmz queue:clear [queue]       # 清空队列
-php ylmz routes                    # 查看路由
+php ylmz schedule:run              # 定时任务
+php ylmz routes                    # 路由列表
+php ylmz key:generate              # 生成 APP_KEY
 ```
 
 ## 路由
 
-### 显式路由（推荐）
-
-在 `app/Provider/RouteServiceProvider.php` 中注册：
-
 ```php
-$router = app()->getRouter();
-
 // 基础路由
 $router->get('/posts', [PostCtrl::class, 'index']);
 $router->post('/posts', [PostCtrl::class, 'store']);
 $router->get('/posts/{id}', [PostCtrl::class, 'show']);
 
-// 带中间件的路由组
-$router->group([Auth::class], function ($router) {
-    $router->get('/admin/dashboard', [AdminCtrl::class, 'index']);
-    $router->get('/admin/users', [AdminCtrl::class, 'users']);
+// 中间件 + 前缀
+$router->prefix('/api/v1')->group([Cors::class], function ($r) {
+    $r->get('/users', [UserCtrl::class, 'index']);
 });
-```
-
-### 自动路由
-
-未匹配显式路由时，自动映射 URL 到控制器：
-
-```
-GET /user/profile  →  App\Ctrl\UserCtrl::profile()
-GET /              →  App\Ctrl\IndexCtrl::index()
 ```
 
 ## 控制器
 
 ```php
-<?php
 namespace App\Ctrl;
-
 use Ylmz\Controller;
 use Ylmz\Http\Request;
 use Ylmz\Http\Response;
@@ -144,39 +148,28 @@ class PostCtrl extends Controller
 {
     public function index(Request $request): Response
     {
-        $posts = \App\Model\Post::db()
-            ->select('post', '*', ['LIMIT' => 10]);
-
-        return $this->json($posts);
+        return $this->json(['posts' => []]);
     }
 
     public function show(Request $request): Response
     {
-        $id = $request->input('id');
-        // ...查询逻辑
-
-        $this->assign('title', '文章详情');
-        $this->assign('post', $post);
-        return $this->display('post/show.html');
+        $this->assign('post', ['title' => 'Hello']);
+        return $this->display('post/detail.html');
     }
 }
 ```
 
-## 模型（MySQL）
+## 模型 (MySQL)
 
 ```php
-<?php
 namespace App\Model;
-
 use Ylmz\Model;
 
 class Post extends Model
 {
-    protected string $table = 'post';
-
-    public function getPublished(): array
+    public function published(): array
     {
-        return self::db()->select($this->table, '*', [
+        return self::db()->select('post', '*', [
             'status' => 1,
             'ORDER' => ['id' => 'DESC'],
             'LIMIT' => 20,
@@ -185,150 +178,100 @@ class Post extends Model
 }
 ```
 
-Medoo 完整用法见：https://medoo.in/doc
-
-## Redis 缓存
-
-在 `.env` 中设置 `CACHE_DRIVER=redis`：
+## 认证 (JWT)
 
 ```php
-use Ylmz\Cache;
+// 登录
+$token = Auth::attempt(['email' => 'a@b.com', 'password' => 'secret']);
+// 返回 JWT 字符串或 null
 
-Cache::set('user:1', $userData, 3600);    // 写入，3600秒过期
-$user = Cache::get('user:1');              // 读取
-Cache::delete('user:1');                   // 删除
-Cache::clear();                            // 清空当前库
+// 获取当前用户
+$user = Auth::user();
+$userId = Auth::id();
+
+// 中间件保护路由
+$router->group([AuthMiddleware::class], function ($r) {
+    $r->get('/profile', [UserCtrl::class, 'profile']);
+});
 ```
-
-缓存键自动带 `REDIS_PREFIX` 前缀。
 
 ## 消息队列
 
-### 创建 Job
-
-```bash
-php ylmz make:job SendEmail
-```
-
 ```php
-<?php
-namespace App\Job;
-
-use Ylmz\Queue\Job;
-
-class SendEmail extends Job
-{
-    public function handle(): void
-    {
-        $to = $this->payload['to'];
-        $subject = $this->payload['subject'];
-        mail($to, $subject);
-    }
-}
-```
-
-### 推送 Job
-
-```php
-use Ylmz\Queue\Queue;
-
+// 推送
 $queue = new Queue('default');
+$queue->push(SendEmailJob::class, ['to' => 'a@b.com'], delay: 300);
 
-// 即时执行
-$queue->push(Job\SendEmail::class, [
-    'to' => 'user@example.com',
-    'subject' => 'Welcome!',
-]);
-
-// 延迟 5 分钟执行
-$queue->push(Job\SendEmail::class, [
-    'to' => 'user@example.com',
-    'subject' => 'Reminder',
-], delay: 300);
+// Worker
+// php ylmz queue:work
 ```
 
-### 启动 Worker
-
-```bash
-# 处理 default 队列
-php ylmz queue:work
-
-# 处理指定队列
-php ylmz queue:work emails
-```
-
-Worker 特性：
-- 失败自动重试（默认 3 次）
-- 超限进入失败队列
-- 支持延迟任务（zset 调度）
-
-## 中间件
-
-框架内置三个中间件：
-
-| 中间件 | 功能 |
-|---|---|
-| `App\Middleware\Auth` | 认证检查 |
-| `App\Middleware\Cors` | 跨域请求 |
-| `App\Middleware\Csrf` | CSRF 令牌验证 |
-
-自定义中间件：
-
-```bash
-php ylmz make:middleware Throttle
-```
+## 定时任务
 
 ```php
-class Throttle implements Middleware
-{
-    public function handle(Request $request, Closure $next): Response
-    {
-        // 前置逻辑
-        $response = $next($request);
-        // 后置逻辑
-        return $response;
-    }
-}
+// app/schedule.php
+schedule()->command('php ylmz queue:work')->everyMinute();
+schedule()->call(fn() => Log::info('cleanup'))->daily();
+// cron: * * * * * php ylmz schedule:run
 ```
 
-## 输入验证
+## 数据库迁移
+
+```bash
+php ylmz make:migration create_users_table
+php ylmz migrate
+php ylmz migrate:rollback
+```
+
+## 缓存
 
 ```php
-$validator = new \Ylmz\Validator($request->all());
-
-$validator
-    ->required('name', '用户名不能为空')
-    ->email('email')
-    ->min('age', 18)
-    ->max('content', 5000);
-
-if ($validator->fails()) {
-    return $this->json([
-        'error' => $validator->firstError()
-    ], 422);
-}
+Cache::set('key', $data, 3600);
+$data = Cache::get('key');
+Cache::remember('users', 60, fn() => Model::db()->select('users', '*'));
 ```
 
-## 配置说明 (.env)
+## 验证
+
+```php
+$v = new Validator($request->all());
+$v->required('email')->email('email')
+  ->min('password', 6)
+  ->confirmed('password');
+if ($v->fails()) return $this->json(['error' => $v->firstError()], 422);
+```
+
+## 邮件
+
+```php
+Mail::new()
+    ->to('user@example.com')
+    ->subject('Welcome')
+    ->html('<h1>Hello</h1>')
+    ->send();
+```
+
+## 辅助函数 (20)
+
+```php
+app()  config()  view()  collect()  encrypt()  decrypt()
+bcrypt()  csrf_token()  csrf_field()  session()  old()
+redirect()  abort()  route()  event()  now()
+trans()  __()  xss()  schedule()  rate_limiter()
+```
+
+## 配置 (.env)
 
 ```ini
-# 应用
-APP_NAME=Ylmz
-APP_DEBUG=true                  # 开发模式（Whoops 错误页）
-
-# MySQL
+APP_DEBUG=true
 DB_TYPE=mysql
 DB_HOST=localhost
 DB_NAME=demo
 
-# Redis（可选）
 REDIS_HOST=127.0.0.1
-REDIS_PREFIX=ylmz:
-
-# 驱动选择
-CACHE_DRIVER=file               # file | redis
-QUEUE_DRIVER=redis              # 当前仅 redis
-LOG_DRIVER=file                 # file | db
+CACHE_DRIVER=file          # file | redis | db
+QUEUE_DRIVER=redis
+MAIL_DRIVER=sendmail       # sendmail | smtp
 ```
 
 ## License

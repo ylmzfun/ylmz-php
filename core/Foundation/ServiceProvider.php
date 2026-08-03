@@ -1,6 +1,6 @@
 <?php
 
-namespace Ylmz;
+namespace Ylmz\Foundation;
 
 abstract class ServiceProvider
 {

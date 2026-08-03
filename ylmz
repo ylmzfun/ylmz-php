@@ -22,7 +22,7 @@ define('YL_RUNTIME', YL_ROOT . '/runtime');
 
 // 加载环境配置
 if (file_exists(YL_ROOT . '/.env')) {
-    \Ylmz\Config::load(YL_ROOT);
+    \Ylmz\Foundation\Config::load(YL_ROOT);
 }
 
 // 加载辅助函数
@@ -37,9 +37,16 @@ $kernel->register('make:model', \Ylmz\Console\MakeModelCommand::class);
 $kernel->register('make:middleware', \Ylmz\Console\MakeMiddlewareCommand::class);
 $kernel->register('make:provider', \Ylmz\Console\MakeProviderCommand::class);
 $kernel->register('make:job', \Ylmz\Console\MakeJobCommand::class);
+$kernel->register('make:migration', \Ylmz\Console\MakeMigrationCommand::class);
+$kernel->register('make:command', \Ylmz\Console\MakeCommandCommand::class);
+$kernel->register('key:generate', \Ylmz\Console\KeyGenerateCommand::class);
+$kernel->register('migrate', \Ylmz\Console\MigrateCommand::class);
+$kernel->register('migrate:rollback', \Ylmz\Console\MigrateRollbackCommand::class);
+$kernel->register('migrate:status', \Ylmz\Console\MigrateStatusCommand::class);
 $kernel->register('serve', \Ylmz\Console\ServeCommand::class);
 $kernel->register('routes', \Ylmz\Console\RoutesCommand::class);
 $kernel->register('queue:work', \Ylmz\Console\QueueWorkCommand::class);
 $kernel->register('queue:clear', \Ylmz\Console\QueueClearCommand::class);
+$kernel->register('schedule:run', \Ylmz\Console\ScheduleRunCommand::class);
 
 exit($kernel->run($argv));

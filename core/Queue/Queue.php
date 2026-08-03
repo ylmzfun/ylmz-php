@@ -2,22 +2,17 @@
 
 namespace Ylmz\Queue;
 
-use Ylmz\Redis;
-
 class Queue
 {
     private \Redis $redis;
-    private string $queueName;
+    private string $name;
 
-    public function __construct(string $queueName = 'default')
+    public function __construct(string $name = 'default')
     {
-        $this->redis = Redis::connection();
-        $this->queueName = 'queue:' . $queueName;
+        $this->redis = \Ylmz\Support\Redis::connection();
+        $this->name = 'queue:' . $name;
     }
 
-    /**
-     * Push a job onto the queue.
-     */
     public function push(string $jobClass, array $payload = [], ?int $delay = null): string
     {
         $data = json_encode([
@@ -29,66 +24,44 @@ class Queue
         ]);
 
         if ($delay && $delay > 0) {
-            $this->redis->zAdd($this->queueName . ':delayed', time() + $delay, $data);
+            $this->redis->zAdd($this->name . ':delayed', time() + $delay, $data);
         } else {
-            $this->redis->rPush($this->queueName, $data);
+            $this->redis->rPush($this->name, $data);
         }
 
         return $id;
     }
 
-    /**
-     * Pop the next job from the queue.
-     */
     public function pop(): ?array
     {
-        // Process delayed jobs that are ready
-        $this->migrateDelayedJobs();
-
-        $data = $this->redis->lPop($this->queueName);
-        if (!$data) {
-            return null;
-        }
-
-        return json_decode($data, true);
+        $this->migrateDelayed();
+        $data = $this->redis->lPop($this->name);
+        return $data ? json_decode($data, true) : null;
     }
 
-    /**
-     * Get queue size.
-     */
     public function size(): int
     {
-        return $this->redis->lLen($this->queueName);
+        return $this->redis->lLen($this->name);
     }
 
-    /**
-     * Move a failed job to the failed queue.
-     */
     public function fail(array $job, string $error): void
     {
         $job['failed_at'] = time();
         $job['error'] = $error;
-        $this->redis->rPush($this->queueName . ':failed', json_encode($job));
+        $this->redis->rPush($this->name . ':failed', json_encode($job));
     }
 
-    /**
-     * Clear the queue.
-     */
     public function clear(): void
     {
-        $this->redis->del($this->queueName);
-        $this->redis->del($this->queueName . ':delayed');
-        $this->redis->del($this->queueName . ':failed');
+        $this->redis->del($this->name, $this->name . ':delayed', $this->name . ':failed');
     }
 
-    private function migrateDelayedJobs(): void
+    private function migrateDelayed(): void
     {
-        $now = time();
-        $jobs = $this->redis->zRangeByScore($this->queueName . ':delayed', 0, $now);
-
+        $jobs = $this->redis->zRangeByScore($this->name . ':delayed', 0, time());
         foreach ($jobs as $data) {
-            $this->redis->zRem($this->queueName . ':delayed', $data);
-            $this->redis->rPush($this->queueName, $data);
+            $this->redis->zRem($this->name . ':delayed', $data);
+            $this->redis->rPush($this->name, $data);
         }
     }
 }
